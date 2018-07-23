@@ -1,0 +1,28 @@
+version: 1.0.{build}
+image: Visual Studio 2015
+install:
+- ps: |
+    Install-PackageProvider -Name NuGet –Force
+    Install-Package -Name Pester -ProviderName PowerShellGet -Scope AllUsers -Force
+    Install-Module -Name PSScriptAnalyzer -Scope AllUsers –Force
+    Import-Module -Name Pester
+    Import-Module -Name PSScriptAnalyzer
+build: off
+after_test:
+- ps: |
+    7z a -tzip "${Env:APPVEYOR_BUILD_FOLDER}\${Env:APPVEYOR_PROJECT_NAME}.zip" "${Env:APPVEYOR_BUILD_FOLDER}\*"
+    7z a -tzip "${Env:APPVEYOR_BUILD_FOLDER}\${Env:APPVEYOR_PROJECT_NAME}.zip" "${Env:APPVEYOR_BUILD_FOLDER}\Tests\deploy.ps1"
+test_script:
+- ps: |
+    $testResultsFile = ".\TestsResults.xml"
+    $results = Invoke-Pester -OutputFormat NUnitXml -OutputFile $testResultsFile -PassThru
+    (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($Env:APPVEYOR_JOB_ID)", (Resolve-Path $testResultsFile))
+    If ($results.FailedCount -gt 0) {
+      Throw "$($results.FailedCount) tests failed."
+    }
+artifacts:
+- path: '*.zip'
+  name: PSAppDeployToolkit
+deploy:
+- provider: Environment
+  name: FileServer
