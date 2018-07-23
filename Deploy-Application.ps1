@@ -187,37 +187,37 @@ Try {
 
 		# <Perform Uninstallation tasks here>
 		#Uninstall SOLIDWORKS 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{837A0B0D-F508-4088-8B05-606477DEB905}'
+		Execute-MSI -Action 'Uninstall' -Path '{837A0B0D-F508-4088-8B05-606477DEB905}'
 
 		#Uninstall SOLIDWORKS eDrawings 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{995E8013-00B1-4F8F-BA13-FF96C1B5DFBB}'
-		
+		Execute-MSI -Action 'Uninstall' -Path '{995E8013-00B1-4F8F-BA13-FF96C1B5DFBB}'
+
 		#Uninstall SOLIDWORKS Composer Player 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{DED607E3-AA70-4A76-A7FD-56124754A762}'
+		Execute-MSI -Action 'Uninstall' -Path '{DED607E3-AA70-4A76-A7FD-56124754A762}'
 
 		#Uninstall SOLIDWORKS PDM Client
-		Execute-MSI -Action Uninstall -Path '{43CE84D6-3110-42FE-8907-85C5FB75D6D8}'
+		Execute-MSI -Action 'Uninstall' -Path '{43CE84D6-3110-42FE-8907-85C5FB75D6D8}'
 
 		#Uninstall SOLIDWORKS Electrical2018 SP03
-		Execute-MSI -Action Uninstall -Path '{F5280967-D8E8-4386-B4E0-62937CFE1970}'
+		Execute-MSI -Action 'Uninstall' -Path '{F5280967-D8E8-4386-B4E0-62937CFE1970}'
 
 		#Uninstall SOLIDWORKS Plastics 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{BB73823B-4D4D-44FF-86A3-4CDC21CF76F0}'
+		Execute-MSI -Action 'Uninstall' -Path '{BB73823B-4D4D-44FF-86A3-4CDC21CF76F0}'
 
 		#Uninstall SOLIDWORKS Flow Simulation 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{984CA261-0340-4C4F-AC6E-FE4890B5D6DF}'
+		Execute-MSI -Action 'Uninstall' -Path '{984CA261-0340-4C4F-AC6E-FE4890B5D6DF}'
 
 		#Uninstall SOLIDWORKS Visualize 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{FA9DFD3D-B786-491F-8195-8320FA7D2425}'
+		Execute-MSI -Action 'Uninstall' -Path '{FA9DFD3D-B786-491F-8195-8320FA7D2425}'
 
 		#Uninstall SOLIDWORKS Plastics 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{9F301E50-ED1C-408F-85AC-D182E400F61B}'
+		Execute-MSI -Action 'Uninstall' -Path '{9F301E50-ED1C-408F-85AC-D182E400F61B}'
 
 		#Uninstall SOLIDWORKS Manage Client 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{BCCEB20C-871D-4672-9504-42C58BDBC050}'
+		Execute-MSI -Action 'Uninstall' -Path '{BCCEB20C-871D-4672-9504-42C58BDBC050}'
 
 		#Uninstall SOLIDWORKS CAM 2018 SP03
-		Execute-MSI -Action Uninstall -Path '{C9043FEF-A6CE-4725-8A93-1488DF0335DF}'
+		Execute-MSI -Action 'Uninstall' -Path '{C9043FEF-A6CE-4725-8A93-1488DF0335DF}'
 
 
 
