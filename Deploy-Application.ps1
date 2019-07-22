@@ -70,7 +70,7 @@ Try {
 	[string]$appLang = 'EN'
 	[string]$appRevision = '01'
 	[string]$appScriptVersion = '3.7.0.1'
-	[string]$appScriptDate = '07/22/2018'
+	[string]$appScriptDate = '07/23/2018'
 	[string]$appScriptAuthor = 'MSU Denver'
 	##*===============================================
 	## Variables: Install Titles (Only set here to override defaults set by the toolkit)
