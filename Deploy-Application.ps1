@@ -127,7 +127,7 @@ Try {
 		Show-InstallationProgress
 
 		## <Perform Pre-Installation tasks here>
-		Remove-MSIApplications -Name 'SolidWorks' -AllowRebootPassThru
+		Remove-MSIApplications -Name 'SolidWorks'
 
 		##*===============================================
 		##* INSTALLATION
@@ -186,7 +186,7 @@ Try {
 		}
 
 		# <Perform Uninstallation tasks here>
-		Remove-MSIApplications -Name 'SolidWorks' -AllowRebootPassThru
+		Remove-MSIApplications -Name 'SolidWorks'
 
 		# Removes Solidworks Installation Manager
 		##Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SolidWorks Installation Manager 20190-40300-1100-100' -Recurse
