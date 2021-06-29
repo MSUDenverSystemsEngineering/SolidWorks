@@ -144,7 +144,7 @@ Try {
 		##$exitCode = Execute-Process -Path "$dirFiles\startswinstall.exe" -Parameters "/install /now" -WindowStyle "Hidden" -PassThru
         ##If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
 
-		$exitCode = Execute-MSI -Action Install -Path "$dirFiles\AdminImage\64bit\SOLIDWORKS File Utilities.msi" -Parameters 'SOLIDWORKSSERIALNUMBER="9710015247115195M8KGQB97" ENABLEPERFORMANCE=0 OFFICEOPTION=3 SERVERLIST=25734@VMWAS32.WINAD.MSUDENVER.EDU /QB!' -PassThru
+		$exitCode = Execute-MSI -Action Install -Path "$dirFiles\AdminImage\64bit\swfileutilities\SOLIDWORKS File Utilities.msi" -Parameters 'SOLIDWORKSSERIALNUMBER="9710015247115195M8KGQB97" ENABLEPERFORMANCE=0 OFFICEOPTION=3 SERVERLIST=25734@VMWAS32.WINAD.MSUDENVER.EDU /QB!' -PassThru
         If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
 
 
