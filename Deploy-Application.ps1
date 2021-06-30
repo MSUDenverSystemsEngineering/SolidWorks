@@ -128,6 +128,11 @@ Try {
 
 		## <Perform Pre-Installation tasks here>
 		Remove-MSIApplications -Name 'SolidWorks'
+		try {
+			Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SolidWorks Installation Manager 20190-40300-1100-100' -Recurse
+			Remove-Folder -Path 'C:\Windows\Solidworks'
+		}
+		catch {}
 
 		##*===============================================
 		##* INSTALLATION
@@ -185,8 +190,8 @@ Try {
 		Remove-MSIApplications -Name 'SolidWorks'
 
 		# Removes Solidworks Installation Manager
-		##Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SolidWorks Installation Manager 20190-40300-1100-100' -Recurse
-		##Remove-Folder -Path 'C:\Windows\Solidworks'
+		Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SolidWorks Installation Manager 20190-40300-1100-100' -Recurse
+		Remove-Folder -Path 'C:\Windows\Solidworks'
 
 		##*===============================================
 		##* POST-UNINSTALLATION
