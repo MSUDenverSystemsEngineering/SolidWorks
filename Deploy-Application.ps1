@@ -71,7 +71,7 @@ Try {
 	[string]$appArch = 'x64'
 	[string]$appLang = 'EN'
 	[string]$appRevision = '01'
-	[string]$appScriptVersion = '1.0.0'
+	[string]$appScriptVersion = '1.2.0'
 	[string]$appScriptDate = '06/03/2021'
 	[string]$appScriptAuthor = 'James Hardy'
 	##*===============================================
@@ -141,12 +141,8 @@ Try {
 		}
 
 		## <Perform Installation tasks here>
-		##$exitCode = Execute-Process -Path "$dirFiles\startswinstall.exe" -Parameters "/install /now" -WindowStyle "Hidden" -PassThru
-        ##If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
-
-		$exitCode = Execute-MSI -Action Install -Path "$dirFiles\AdminImage\64bit\swfileutilities\SOLIDWORKS File Utilities.msi" -Parameters 'SOLIDWORKSSERIALNUMBER="9710015247115195M8KGQB97" ENABLEPERFORMANCE=0 OFFICEOPTION=3 SERVERLIST=25734@VMWAS32.WINAD.MSUDENVER.EDU /QB!' -PassThru
+		$exitCode = Execute-Process -Path "$dirFiles\adminimage\startswinstall.exe" -Parameters "/install /now" -WindowStyle "Hidden" -PassThru
         If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
-
 
 		##*===============================================
 		##* POST-INSTALLATION
