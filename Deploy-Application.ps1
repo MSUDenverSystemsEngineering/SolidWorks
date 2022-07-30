@@ -65,8 +65,8 @@ Try {
 	##* VARIABLE DECLARATION
 	##*===============================================
 	## Variables: Application
-	[string]$appVendor = 'SolidWorks'
-	[string]$appName = ''
+	[string]$appVendor = 'Dassault Systèmes'
+	[string]$appName = 'SolidWorks'
 	[string]$appVersion = '2022 SP3'
 	[string]$appArch = 'x64'
 	[string]$appLang = 'EN'
@@ -144,6 +144,17 @@ Try {
 		## <Perform Installation tasks here>
 		$exitCode = Execute-Process -Path "\\vmwfs14\lab\LabInstallers\Solidworks\2022SP3\startswinstall.exe" -Parameters "/install /now" -WindowStyle "Hidden" -PassThru
         If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
+
+
+		## Restart explorer if it's closed
+		$ProcessActive = Get-Process explorer -ErrorAction SilentlyContinue
+        if(!$ProcessActive){
+            Execute-ProcessAsUser -Path "$envSystemRoot\explorer.exe"
+            Write-Log "Restarting Explorer"
+        }
+        Else{
+            Write-Log "No restart of explorer needed"
+        }
 
 		##*===============================================
 		##* POST-INSTALLATION
