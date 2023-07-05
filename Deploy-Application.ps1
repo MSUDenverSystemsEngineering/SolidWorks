@@ -131,7 +131,7 @@ Try {
 		## We don't actually want to remove old versions since new installers can upgrade over it by default
 		## THat said, if the 2022 Uninstall strings are needed:
 		<#
-		
+
 		# Remove-MSIApplications -Name 'SolidWorks 2022'
 		# Will call the uninstaller but does it incompletely and messy. Keeping in case this ever gets better. Used Get-Uninstaller for MSIs below
 
@@ -157,7 +157,7 @@ Try {
 		Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SolidWorks Installation Manager 20220-40301-1100-100' -Recurse
 		Remove-Folder -Path 'C:\Windows\Solidworks'
 
-		
+
 		#>
 
 
