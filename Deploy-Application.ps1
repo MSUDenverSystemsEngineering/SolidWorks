@@ -67,12 +67,12 @@ Try {
 	## Variables: Application
 	[string]$appVendor = 'Dassault Systemes'
 	[string]$appName = 'SolidWorks'
-	[string]$appVersion = '2022 SP3'
+	[string]$appVersion = '2023 SP2'
 	[string]$appArch = 'x64'
 	[string]$appLang = 'EN'
 	[string]$appRevision = '01'
 	[string]$appScriptVersion = '1.2.0'
-	[string]$appScriptDate = '07/25/2022'
+	[string]$appScriptDate = '06/27/2023'
 	[string]$appScriptAuthor = 'Steve Patterson'
 	##*===============================================
 	## Variables: Install Titles (Only set here to override defaults set by the toolkit)
@@ -127,7 +127,38 @@ Try {
 		Show-InstallationProgress
 
 		## <Perform Pre-Installation tasks here>
-		Remove-MSIApplications -Name 'SolidWorks'
+		## <Perform Pre-Installation tasks here>
+		## We don't actually want to remove old versions since new installers can upgrade over it by default
+		## THat said, if the 2022 Uninstall strings are needed:
+		<#
+		
+		# Remove-MSIApplications -Name 'SolidWorks 2022'
+		# Will call the uninstaller but does it incompletely and messy. Keeping in case this ever gets better. Used Get-Uninstaller for MSIs below
+
+		#Uninstall E-drawings
+		Execute-MSI -Action Uninstall -Path '{08A73D4E-3FD0-4242-B08F-A41D8969C5B4}'
+		#Uninstall CAM 2022
+		Execute-MSI -Action Uninstall -Path '{46053718-2931-47EA-B678-6DF08370F2D4}'
+		#Uninstall Flow SImulations 2022
+		Execute-MSI -Action Uninstall -Path '{A9F14961-697D-455C-B48B-FCE9E22664A5}'
+		#Uninstall File Utilities
+		Execute-MSI -Action Uninstall -Path '{E3B4130E-6066-4613-918C-6EB5E7B68D8C}'
+		#uninstall Solidworks 2022
+		Execute-MSI -Action Uninstall -Path '{26EA0056-4BAD-4F9E-BDCE-A72E25C7D06D}'
+
+		#Remove extra folders and data
+		Remove-Folder -Path "$envProgramData\SOLIDWORKS"
+		Remove-Folder -Path "$envSystemDrive\SOLIDWORKS Data"
+		Remove-Folder -Path "$envProgramFiles\SOLIDWORKS Corp"
+
+
+
+		# Removes Solidworks Installation Manager and entry from Add/Remove
+		Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SolidWorks Installation Manager 20220-40301-1100-100' -Recurse
+		Remove-Folder -Path 'C:\Windows\Solidworks'
+
+		
+		#>
 
 
 		##*===============================================
@@ -142,7 +173,7 @@ Try {
 		}
 
 		## <Perform Installation tasks here>
-		$exitCode = Execute-Process -Path "\\vmwfs14\lab\LabInstallers\Solidworks\2022SP3\startswinstall.exe" -Parameters "/install /now" -WindowStyle "Hidden" -PassThru
+		$exitCode = Execute-Process -Path "\\vmwfs14.winad.msudenver.edu\lab\LabInstallers\Solidworks\2023SP2\startswinstall.exe" -Parameters "/install /now" -WindowStyle "Hidden" -PassThru
         If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
 
 
@@ -194,29 +225,32 @@ Try {
 		}
 
 		# <Perform Uninstallation tasks here>
-		# Remove-MSIApplications -Name 'SolidWorks 2022'
+		# Remove-MSIApplications -Name 'SolidWorks 2023'
 		# Will call the uninstaller but does it incompletely and messy. Keeping in case this ever gets better. Used Get-Uninstaller for MSIs below
 
 		#Uninstall E-drawings
-		Execute-MSI -Action Uninstall -Path '{08A73D4E-3FD0-4242-B08F-A41D8969C5B4}'
-		#Uninstall CAM 2022
-		Execute-MSI -Action Uninstall -Path '{46053718-2931-47EA-B678-6DF08370F2D4}'
-		#Uninstall Flow SImulations 2022
-		Execute-MSI -Action Uninstall -Path '{A9F14961-697D-455C-B48B-FCE9E22664A5}'
-		#Uninstall File Utilities
-		Execute-MSI -Action Uninstall -Path '{E3B4130E-6066-4613-918C-6EB5E7B68D8C}'
-		#uninstall Solidworks 2022
-		Execute-MSI -Action Uninstall -Path '{26EA0056-4BAD-4F9E-BDCE-A72E25C7D06D}'
+		Execute-MSI -Action Uninstall -Path '{5DA7B824-6CD3-464E-A321-7A12A5AAC688}'
+		#Uninstall CAM 2023
+		Execute-MSI -Action Uninstall -Path '{6336104B-A756-43B6-9E4A-90A6F0B73709}'
+		#Uninstall Flow SImulations 2023
+		Execute-MSI -Action Uninstall -Path '{CA66BF32-7373-41D3-83E6-AEEB00F777E7}'
+		#Uninstall File Utilities 2023
+		Execute-MSI -Action Uninstall -Path '{27D1CA1A-717A-4A47-8680-9D35E57EDEB4}'
+		#uninstall Solidworks 2023
+		Execute-MSI -Action Uninstall -Path '{F24FAABB-0C72-4F06-9B55-DB08C884730C}'
+		#uninstall CEF for SOLIDWORKS Applications
+		Execute-MSI -Action Uninstall -Path '{93D5C716-DD70-4353-A1F7-AD013F1EE7AD}'
 
 		#Remove extra folders and data
 		Remove-Folder -Path "$envProgramData\SOLIDWORKS"
 		Remove-Folder -Path "$envSystemDrive\SOLIDWORKS Data"
 		Remove-Folder -Path "$envProgramFiles\SOLIDWORKS Corp"
+		Remove-Folder -Path "$envProgramData\Microsoft\Windows\Start Menu\Programs\SOLIDWORKS Installation Manager"
 
 
 
 		# Removes Solidworks Installation Manager and entry from Add/Remove
-		Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SolidWorks Installation Manager 20220-40301-1100-100' -Recurse
+		Remove-RegistryKey -Key 'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SolidWorks Installation Manager 20230-40201-1100-100' -Recurse
 		Remove-Folder -Path 'C:\Windows\Solidworks'
 
 		##*===============================================
@@ -280,10 +314,10 @@ Catch {
 
 
 # SIG # Begin signature block
-# MIImVgYJKoZIhvcNAQcCoIImRzCCJkMCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# MIImVAYJKoZIhvcNAQcCoIImRTCCJkECAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBmAJCy+ROvrzAk
-# gT11QYvAqvjhZqLvK+DwCh5RfkuTA6CCH8EwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCA6pGXLp7sZGrO/
+# zoZCr9ZWinUP6Ti1NqyC13dUuiKhP6CCH8AwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -415,74 +449,74 @@ Catch {
 # 8NDT/LKzH7aZlib0PHmLXGTMze4nmuWgwAxyh8FuTVrTHurwROYybxzrF06Uw3hl
 # IDsPQaof6aFBnf6xuKBlKjTg3qj5PObBMLvAoGMs/FwWAKjQxH/qEZ0eBsambTJd
 # tDgJK0kHqv3sMNrxpy/Pt/360KOE2See+wFmd7lWEOEgbsausfm2usg1XTN2jvF8
-# IAwqd661ogKGuinutFoAsYyr4/kKyVRd1LlqdJ69SK6YMIIG9jCCBN6gAwIBAgIR
-# AJA5f5rSSjoT8r2RXwg4qUMwDQYJKoZIhvcNAQEMBQAwfTELMAkGA1UEBhMCR0Ix
-# GzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEY
-# MBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBU
-# aW1lIFN0YW1waW5nIENBMB4XDTIyMDUxMTAwMDAwMFoXDTMzMDgxMDIzNTk1OVow
-# ajELMAkGA1UEBhMCR0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1Nl
-# Y3RpZ28gTGltaXRlZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGlu
-# ZyBTaWduZXIgIzMwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCQsnE/
-# eeHUuYoXzMOXwpCUcu1aOm8BQ39zWiifJHygNUAG+pSvCqGDthPkSxUGXmqKIDRx
-# e7slrT9bCqQfL2x9LmFR0IxZNz6mXfEeXYC22B9g480Saogfxv4Yy5NDVnrHzgPW
-# AGQoViKxSxnS8JbJRB85XZywlu1aSY1+cuRDa3/JoD9sSq3VAE+9CriDxb2YLAd2
-# AXBF3sPwQmnq/ybMA0QfFijhanS2nEX6tjrOlNEfvYxlqv38wzzoDZw4ZtX8fR6b
-# WYyRWkJXVVAWDUt0cu6gKjH8JgI0+WQbWf3jOtTouEEpdAE/DeATdysRPPs9zdDn
-# 4ZdbVfcqA23VzWLazpwe/OpwfeZ9S2jOWilh06BcJbOlJ2ijWP31LWvKX2THaygM
-# 2qx4Qd6S7w/F7KvfLW8aVFFsM7ONWWDn3+gXIqN5QWLP/Hvzktqu4DxPD1rMbt8f
-# vCKvtzgQmjSnC//+HV6k8+4WOCs/rHaUQZ1kHfqA/QDh/vg61MNeu2lNcpnl8TIt
-# UfphrU3qJo5t/KlImD7yRg1psbdu9AXbQQXGGMBQ5Pit/qxjYUeRvEa1RlNsxfTh
-# hieThDlsdeAdDHpZiy7L9GQsQkf0VFiFN+XHaafSJYuWv8at4L2xN/cf30J7qusc
-# 6es9Wt340pDVSZo6HYMaV38cAcLOHH3M+5YVxQIDAQABo4IBgjCCAX4wHwYDVR0j
-# BBgwFoAUGqH4YRkgD8NBd0UojtE1XwYSBFUwHQYDVR0OBBYEFCUuaDxrmiskFKkf
-# ot8mOs8UpvHgMA4GA1UdDwEB/wQEAwIGwDAMBgNVHRMBAf8EAjAAMBYGA1UdJQEB
-# /wQMMAoGCCsGAQUFBwMIMEoGA1UdIARDMEEwNQYMKwYBBAGyMQECAQMIMCUwIwYI
-# KwYBBQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMAgGBmeBDAEEAjBEBgNV
-# HR8EPTA7MDmgN6A1hjNodHRwOi8vY3JsLnNlY3RpZ28uY29tL1NlY3RpZ29SU0FU
-# aW1lU3RhbXBpbmdDQS5jcmwwdAYIKwYBBQUHAQEEaDBmMD8GCCsGAQUFBzAChjNo
-# dHRwOi8vY3J0LnNlY3RpZ28uY29tL1NlY3RpZ29SU0FUaW1lU3RhbXBpbmdDQS5j
-# cnQwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLnNlY3RpZ28uY29tMA0GCSqGSIb3
-# DQEBDAUAA4ICAQBz2u1ocsvCuUChMbu0A6MtFHsk57RbFX2o6f2t0ZINfD02oGnZ
-# 85ow2qxp1nRXJD9+DzzZ9cN5JWwm6I1ok87xd4k5f6gEBdo0wxTqnwhUq//EfpZs
-# K9OU67Rs4EVNLLL3OztatcH714l1bZhycvb3Byjz07LQ6xm+FSx4781FoADk+AR2
-# u1fFkL53VJB0ngtPTcSqE4+XrwE1K8ubEXjp8vmJBDxO44ISYuu0RAx1QcIPNLiI
-# ncgi8RNq2xgvbnitxAW06IQIkwf5fYP+aJg05Hflsc6MlGzbA20oBUd+my7wZPvb
-# pAMxEHwa+zwZgNELcLlVX0e+OWTOt9ojVDLjRrIy2NIphskVXYCVrwL7tNEunTh8
-# NeAPHO0bR0icImpVgtnyughlA+XxKfNIigkBTKZ58qK2GpmU65co4b59G6F87VaA
-# pvQiM5DkhFP8KvrAp5eo6rWNes7k4EuhM6sLdqDVaRa3jma/X/ofxKh/p6FIFJEN
-# gvy9TZntyeZsNv53Q5m4aS18YS/to7BJ/lu+aSSR/5P8V2mSS9kFP22GctOi0MBk
-# 0jpCwRoD+9DtmiG4P6+mslFU1UzFyh8SjVfGOe1c/+yfJnatZGZn6Kow4NKtt32x
-# akEnbgOKo3TgigmCbr/j9re8ngspGGiBoZw/bhZZSxQJCZrmrr9gFd2G9TGCBesw
-# ggXnAgEBMGkwVDELMAkGA1UEBhMCR0IxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
-# ZDErMCkGA1UEAxMiU2VjdGlnbyBQdWJsaWMgQ29kZSBTaWduaW5nIENBIFIzNgIR
-# AKVN33D73PFMVIK48rFyyjEwDQYJYIZIAWUDBAIBBQCggYQwGAYKKwYBBAGCNwIB
-# DDEKMAigAoAAoQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgBq5G+Y5t/GvZ
-# eKvIMEZYi3OgVuFTHxzNMmyqcEzgPY8wDQYJKoZIhvcNAQEBBQAEggGAnXxPrS/j
-# 2twHfwS6kFCXadtiIYHmAFD24M+D9weLniPecp227I9i6DWzRr+LhBViGyoC6AE7
-# W2mEPMsA6ZyAk5IbSIQXgbBiHtKJzDK+bCWHftfuyRxCna6gEbjxQG3rHpjn1gZ7
-# XOQLGss9D6WQDsWJcJJ8FYcwUR6+QxoKxJU6r8nvia0pBysngRR7LmYayKa2ysSA
-# mGfUQVCQx9FUSkrv3wWG06QBY8GHlmaNM1hSCSN2hXP9/xyUmmhmAFuibVWWxonN
-# ZGLZcqhnwiLZEc/0TceDRVejkNW8POS8OjhE4GQFHJjkt7LqLqJKhOA6RQz2ac77
-# OOsirnDMaV54FWDXP+qopJF1Qb6JMFOuAV1r4RWs7iEeKOZP0aNyournwOMlXNwN
-# BTQybkDIb/rVyAiDSQVkdx/Se76k1fAIkGpZp4n6yGqv7ZlN48IGjQyvpgUZobyd
-# MdCz6SzkkEtGSiQNBUINhw2tfFX8xPd5WmJf0TiuLgLwATDn9PCG3XEcoYIDTDCC
-# A0gGCSqGSIb3DQEJBjGCAzkwggM1AgEBMIGSMH0xCzAJBgNVBAYTAkdCMRswGQYD
-# VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGDAWBgNV
-# BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
-# dGFtcGluZyBDQQIRAJA5f5rSSjoT8r2RXwg4qUMwDQYJYIZIAWUDBAICBQCgeTAY
-# BgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMjA3MzAx
-# NzQ5MzhaMD8GCSqGSIb3DQEJBDEyBDCA0rZhWO4CmXPM7BNguxYFtJqaokH8v8Q9
-# KR+UWuE5VyBHhWgQef61dS6RXi9/QdowDQYJKoZIhvcNAQEBBQAEggIAZsgHHaGs
-# zH7PNbknYPWIQfknaCyhIIOT6X+fKCYRGZRoI+8NNZ9dCTCJDvqGaw4uNLjZgIjd
-# Jj/9jEcbO55rjgC3xV0cb3lwKnfJFSy/cGL3SLmGyxcrutNQP7lyxB0Y4gxZxhb1
-# V1uJcCbVMFCcKyHNVeiowrvk5xNNT3JnC61HOQYTF8qotz+RigYAtcwVBsiziNh/
-# ABFcZ4AlLPuNgCxo/eLhiFiMT5CIkArruztPbrtr34bMZsnhg+PwjWzrWxg3T9p+
-# g3AbJ5PD1kYgIuukLQGJs+ZSI4++nAqlSLNP2mT1vCuJ5Qq9V9GkHHIos2IMK0L4
-# 0TaoBrEgxmIRi8/wclT7noYx59sjpMF5UOha+bLM7EmX4AEHFMrAYoDRhVlGvo5K
-# ssGOWwOi/ER+RZ7CtpsYn6XgVPOh9fztaTt+q095SId/j1y5mU4Gl9xTDCTVlLUc
-# /hMs09D8diUFVx268oVavUgOSyUyRV76oxuCOa4W/ub1QquZ/TxC8tvyGltp8YJ2
-# eci3DHf4jVVsMpKiTo4B9W6qfs9L3wFLTim3hLTvETp9qgvnBEuaukpoGkfV/0kX
-# S0xSd8ixJqEN9768jFvU13Ep/GfFfsoFIFhvixMLIaCOnHiAHjHPhviNsHg622Xv
-# RwAnhhWOfBIDTpHWmtigphZOMtNpuRg4Reg=
+# IAwqd661ogKGuinutFoAsYyr4/kKyVRd1LlqdJ69SK6YMIIG9TCCBN2gAwIBAgIQ
+# OUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwFADB9MQswCQYDVQQGEwJHQjEb
+# MBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgw
+# FgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNVBAMTHFNlY3RpZ28gUlNBIFRp
+# bWUgU3RhbXBpbmcgQ0EwHhcNMjMwNTAzMDAwMDAwWhcNMzQwODAyMjM1OTU5WjBq
+# MQswCQYDVQQGEwJHQjETMBEGA1UECBMKTWFuY2hlc3RlcjEYMBYGA1UEChMPU2Vj
+# dGlnbyBMaW1pdGVkMSwwKgYDVQQDDCNTZWN0aWdvIFJTQSBUaW1lIFN0YW1waW5n
+# IFNpZ25lciAjNDCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAKSTKFJL
+# zyeHdqQpHJk4wOcO1NEc7GjLAWTkis13sHFlgryf/Iu7u5WY+yURjlqICWYRFFiy
+# uiJb5vYy8V0twHqiDuDgVmTtoeWBIHIgZEFsx8MI+vN9Xe8hmsJ+1yzDuhGYHvzT
+# IAhCs1+/f4hYMqsws9iMepZKGRNcrPznq+kcFi6wsDiVSs+FUKtnAyWhuzjpD2+p
+# WpqRKBM1uR/zPeEkyGuxmegN77tN5T2MVAOR0Pwtz1UzOHoJHAfRIuBjhqe+/dKD
+# cxIUm5pMCUa9NLzhS1B7cuBb/Rm7HzxqGXtuuy1EKr48TMysigSTxleGoHM2K4GX
+# +hubfoiH2FJ5if5udzfXu1Cf+hglTxPyXnypsSBaKaujQod34PRMAkjdWKVTpqOg
+# 7RmWZRUpxe0zMCXmloOBmvZgZpBYB4DNQnWs+7SR0MXdAUBqtqgQ7vaNereeda/T
+# pUsYoQyfV7BeJUeRdM11EtGcb+ReDZvsdSbu/tP1ki9ShejaRFEqoswAyodmQ6Mb
+# AO+itZadYq0nC/IbSsnDlEI3iCCEqIeuw7ojcnv4VO/4ayewhfWnQ4XYKzl021p3
+# AtGk+vXNnD3MH65R0Hts2B0tEUJTcXTC5TWqLVIS2SXP8NPQkUMS1zJ9mGzjd0HI
+# /x8kVO9urcY+VXvxXIc6ZPFgSwVP77kv7AkTAgMBAAGjggGCMIIBfjAfBgNVHSME
+# GDAWgBQaofhhGSAPw0F3RSiO0TVfBhIEVTAdBgNVHQ4EFgQUAw8xyJEqk71j89Fd
+# TaQ0D9KVARgwDgYDVR0PAQH/BAQDAgbAMAwGA1UdEwEB/wQCMAAwFgYDVR0lAQH/
+# BAwwCgYIKwYBBQUHAwgwSgYDVR0gBEMwQTA1BgwrBgEEAbIxAQIBAwgwJTAjBggr
+# BgEFBQcCARYXaHR0cHM6Ly9zZWN0aWdvLmNvbS9DUFMwCAYGZ4EMAQQCMEQGA1Ud
+# HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQVRp
+# bWVTdGFtcGluZ0NBLmNybDB0BggrBgEFBQcBAQRoMGYwPwYIKwYBBQUHMAKGM2h0
+# dHA6Ly9jcnQuc2VjdGlnby5jb20vU2VjdGlnb1JTQVRpbWVTdGFtcGluZ0NBLmNy
+# dDAjBggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wDQYJKoZIhvcN
+# AQEMBQADggIBAEybZVj64HnP7xXDMm3eM5Hrd1ji673LSjx13n6UbcMixwSV32Vp
+# YRMM9gye9YkgXsGHxwMkysel8Cbf+PgxZQ3g621RV6aMhFIIRhwqwt7y2opF8773
+# 9i7Efu347Wi/elZI6WHlmjl3vL66kWSIdf9dhRY0J9Ipy//tLdr/vpMM7G2iDczD
+# 8W69IZEaIwBSrZfUYngqhHmo1z2sIY9wwyR5OpfxDaOjW1PYqwC6WPs1gE9fKHFs
+# GV7Cg3KQruDG2PKZ++q0kmV8B3w1RB2tWBhrYvvebMQKqWzTIUZw3C+NdUwjwkHQ
+# epY7w0vdzZImdHZcN6CaJJ5OX07Tjw/lE09ZRGVLQ2TPSPhnZ7lNv8wNsTow0KE9
+# SK16ZeTs3+AB8LMqSjmswaT5qX010DJAoLEZKhghssh9BXEaSyc2quCYHIN158d+
+# S4RDzUP7kJd2KhKsQMFwW5kKQPqAbZRhe8huuchnZyRcUI0BIN4H9wHU+C4RzZ2D
+# 5fjKJRxEPSflsIZHKgsbhHZ9e2hPjbf3E7TtoC3ucw/ZELqdmSx813UfjxDElOZ+
+# JOWVSoiMJ9aFZh35rmR2kehI/shVCu0pwx/eOKbAFPsyPfipg2I2yMO+AIccq/pK
+# QhyJA9z1XHxw2V14Tu6fXiDmCWp8KwijSPUV/ARP380hHHrl9Y4a1LlAMYIF6jCC
+# BeYCAQEwaTBUMQswCQYDVQQGEwJHQjEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVk
+# MSswKQYDVQQDEyJTZWN0aWdvIFB1YmxpYyBDb2RlIFNpZ25pbmcgQ0EgUjM2AhEA
+# pU3fcPvc8UxUgrjysXLKMTANBglghkgBZQMEAgEFAKCBhDAYBgorBgEEAYI3AgEM
+# MQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQB
+# gjcCAQsxDjAMBgorBgEEAYI3AgEVMC8GCSqGSIb3DQEJBDEiBCARhMTVzlAkr/mL
+# ciwCRn+fL4DLm737DmRm4+FYkJbnnjANBgkqhkiG9w0BAQEFAASCAYBEJHcdSbG3
+# 47lbsuZyNEbJt2keDxzUVDRrSv5d65ZCGDP6XKBFb/NyPWWy2ii9iG9fmqm/zy3C
+# O372sPlvKtLdLdRaE5oDF32mEI4CEb1pbA7/to5Nh90paUwCrOfuAmvERg04Mx3J
+# KcP5oc4vtZfscbfgj4AXU8x3aOqzvMex9bTmgtRKbTGHGdsMtgiyM24AEZceTtol
+# m7kYLoElJ+j/kubl/hykIVCA2D0EPhbTs+VCsqoPLOf+pQhSd9TGQHEvaDlq/EhM
+# 2DeZm7S5DMvrRXLh0HeonjI6VDlixfO7+KHA8EYouZuTIKe/cw5A7sgiOqwvZiJ3
+# 1Y3mgENhImeXYwt6jfV0oR0JxxqVX/imdU/NELyA0viOd4a3mKD8Mhifo+khjzvl
+# tg/rFPUFqkuAt6g8irONP4YTl52BJK+w+oYlwvQgKWsnCz5h+DRS9DhwAJKtl7og
+# tOMHntkjZICkPdSHvy9HSK7/diyqY/NtR4I7lh89veEFn2llJOytbkOhggNLMIID
+# RwYJKoZIhvcNAQkGMYIDODCCAzQCAQEwgZEwfTELMAkGA1UEBhMCR0IxGzAZBgNV
+# BAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UE
+# ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
+# YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoHkwGAYJ
+# KoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwNzA1MTYz
+# MDIxWjA/BgkqhkiG9w0BCQQxMgQwMJF2MEiRdcpxPspgrqjnEu1J5TT/JybMOexh
+# RP5dCWFHTS+F+KW3+Yyl9aQBBn2TMA0GCSqGSIb3DQEBAQUABIICAKA/bM6nsYUL
+# GXCp8hEdFQ5v/Wxufpmo27Ti/k/Wk6gGyVWP9js53+qMVdSUGVrTTttQF1frWn+c
+# b60ryKCp7l/Pt4i6KNgqfN+C4+pAaJXD/dZWQ/5rLvIiSGEyzrlZi60fRkmSaWXT
+# d4Kt7XSwm1sHge1tJdRCRwjsf/PJy8VhnJ+gsST9b4vLeBxQX8Xes2/2TCSANZBs
+# VHNJUeEKsd0rLCzG8WYCRZl+swHF1r1CPB+p4xEp19p1xJY4HQE1USUPaKyQ3qGQ
+# sJXyEAXHLoy3L4Uygr8A0bFv5Zm/slZ73b3jvrvcz/o+T5mtvTeSl6nHSyCsUebE
+# Dis5KzIBOJrxvgtmwp2sJZdAdWe986YOByMDxKKeKF2bnYWfChFSddrBUtjmjGlv
+# Nfak1PpMuIpsamLJSWgoY3P9/AAGF132wKl3+Z33M9NG52C4NQc4FCCZureGbLlV
+# VBU2mO3aFNdfJGy1X1HD6yfC//mPShl8v2WsdivhRO20ttQ79UV50tOlyPwlq7cH
+# OpiCIHgSbk5vVx24qzUzF7iqOqAiM/NdW09/v2lWOfVih3A7b5d8/Sxvk13Kaz4c
+# K6sITMiL2bgKOyahVvx+ZS5zaog2rjDFLbk/52o9h5HvkYO8wSLyH2cwrYAVwpiK
+# Pk0DksBbipzaoUvyo0zYewSfyO1e0IFU
 # SIG # End signature block
