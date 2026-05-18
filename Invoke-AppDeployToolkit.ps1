@@ -95,14 +95,14 @@ $adtSession = @{
     # App variables.
     AppVendor = 'Solidworks'
     AppName = 'Solidworks'
-    AppVersion = '2025'
+    AppVersion = '2026'
     AppArch = ''
     AppLang = ''
     AppRevision = ''
     AppSuccessExitCodes = @(0)
     AppRebootExitCodes = @(1641, 3010)
     AppScriptVersion = '1.0.0'
-    AppScriptDate = '05/07/2025'
+    AppScriptDate = '02/10/2026'
     AppScriptAuthor = 'Will Jarvill'
 
     # Install Titles (Only set here to override defaults set by the toolkit).
@@ -201,7 +201,7 @@ function Uninstall-ADTDeployment
     }
 
     ## <Perform Uninstallation tasks here>
-
+    Start-ADTProcess -FilePath "startswinstall.exe" -ArgumentList "/uninstall /removedata /removeregistry /now"
 
     ##================================================
     ## MARK: Post-Uninstallation
